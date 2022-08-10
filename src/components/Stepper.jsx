@@ -1,0 +1,30 @@
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+
+const steps = [
+  'Inicio',
+  'Datos Contribuyente',
+  'Base Gravable',
+  'Actividades Gravadas',
+  'Liquidacion Privada',
+  'Totales',
+  'Firmas',
+  'Pago y Descarga'
+];
+
+export default function BarraEspacio(props) {
+  return (
+    <Box sx={{ width: '100%' }}>
+      <Stepper activeStep={props.pagina} alternativeLabel>
+        {steps.map((label) => (
+          <Step key={label}>
+            <StepLabel>{label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
+    </Box>
+  );
+}

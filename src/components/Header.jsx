@@ -13,7 +13,7 @@ const Header = () => {
           <img src="./logos/logo_yard_sale.svg" alt="logo" className="logo" />
           <ul>
             <li>
-              <Link to="/login">login</Link>
+              <Link to="/autoliquidable">autoliquidable</Link>
             </li>
             <li>
               <Link to="/recovery-password">recovery password</Link>

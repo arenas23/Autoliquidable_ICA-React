@@ -10,9 +10,18 @@ export default function OpcionesUso() {
     const [correc,setCorrec] = React.useState(false)
     const [color,setColor]=React.useState(['primary','inherit','inherit'])
 
-    const cambioColor=()=>{
-        setCorrec(!correc)
-
+    const cambioColor=(index)=>{
+    
+        if(index==0){
+            setColor(['primary','inherit','inherit'])
+            setCorrec(false)
+        }else if(index==1){
+            setColor(['inherit','primary','inherit'])
+            setCorrec(true)
+        }else{
+            setColor(['inherit','inherit','primary'])
+            setCorrec(false)
+        }
     }
 
     if(correc){
@@ -21,21 +30,21 @@ export default function OpcionesUso() {
             <Grid container spacing={2} rowSpacing={4}>
                 <Grid item xs={4}>
                     <FormControl fullWidth>
-                        <Button variant="contained" color={color[0]}>
+                        <Button variant="contained" color={color[0]} onClick={()=>{cambioColor(0)}}>
                             <div className='tamano'>Declaracion Inicial</div>
                         </Button>
                     </FormControl>
                 </Grid>
                 <Grid item xs={4}>
                     <FormControl fullWidth>
-                        <Button variant="contained" color={color[1]} onClick={()=>{setCorrec(!correc)}}>
+                        <Button variant="contained" color={color[1]} onClick={()=>{cambioColor(1)}}>
                             <div className='tamano'>Correcion</div>
                         </Button>
                     </FormControl>
                 </Grid>
                 <Grid item xs={4}>
                     <FormControl fullWidth>
-                        <Button variant="contained" color={color[2]}>
+                        <Button variant="contained" color={color[2]} onClick={()=>{cambioColor(2)}}>
                             <div className='tamano'>Clausura</div>
                         </Button>
                     </FormControl>
@@ -63,21 +72,21 @@ export default function OpcionesUso() {
             <Grid container spacing={2} rowSpacing={4}>
             <Grid item xs={4}>
                 <FormControl fullWidth>
-                    <Button variant="contained" color={color[0]}>
+                    <Button variant="contained" color={color[0]} onClick={()=>{cambioColor(0)}}>
                         <div className='tamano'>Declaracion Inicial</div>
                     </Button>
                 </FormControl>
             </Grid>
             <Grid item xs={4}>
                 <FormControl fullWidth>
-                    <Button variant="contained" color={color[1]} onClick={()=>{setCorrec(!correc)}}>
+                    <Button variant="contained" color={color[1]} onClick={()=>{cambioColor(1)}}>
                         <div className='tamano'>Correcion</div>
                     </Button>
                 </FormControl>
             </Grid>
             <Grid item xs={4}>
                 <FormControl fullWidth>
-                    <Button variant="contained" color={color[2]}>
+                    <Button variant="contained" color={color[2]} onClick={()=>{cambioColor(2)}}>
                         <div className='tamano'>Clausura</div>
                     </Button>
                 </FormControl>

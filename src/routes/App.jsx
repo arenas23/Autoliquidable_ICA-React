@@ -6,7 +6,7 @@ import Forgot from "../pages/Forgot";
 import RecoveryPassword from "../pages/RecoveryPassword";
 import Home from "../pages/Home";
 import Login from "../pages/Login"
-import Informacion from "../components/informacion";
+import Pagina from "../pages/autoliquidable";
 import NotFound from "../pages/NotFound";
 
 const App = () => {
@@ -19,7 +19,7 @@ const App = () => {
       <Route exact path="/recovery-password" element={<RecoveryPassword/>}/>
       <Route path="*" element={<NotFound/>}/>
       <Route exact path="/login" element={<Login/>} />
-      <Route exact path="/autoliquidable" element={<Informacion/>}/>
+      <Route exact path="/autoliquidable" element={<Pagina/>} />
     </Routes>
   </Layout>
   

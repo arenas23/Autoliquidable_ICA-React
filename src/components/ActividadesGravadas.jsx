@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InfoHacienda from "./InfoHacienda";
 import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
@@ -33,6 +33,11 @@ const ActividadesGravadas = ()=>{
          dato.push(createData("gerat",codigo,gravado,tarifa,impuesto))
         setRows(dato)
 
+      }
+    
+      const actualizar = (t)=>{
+
+        setRows(t)
       }
 
     const paso =3
@@ -96,7 +101,7 @@ const ActividadesGravadas = ()=>{
                 </Fab>
             </Grid>
             <Grid item xs={12}>
-                <TablaActividades filas={rows} funcion={setRows}/>
+                <TablaActividades filas={rows} actualizar={(t)=>(actualizar(t))}/>
             </Grid>
         </Grid>
        

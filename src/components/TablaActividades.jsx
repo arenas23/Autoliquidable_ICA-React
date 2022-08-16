@@ -11,14 +11,18 @@ import Button from '@mui/material/Button'
 
 const TablaActividades = (props)=>{
 
-var datos = []
-datos=props.filas
+// var datos = []
+// datos=props.filas
+var datos=[...props.filas]
 
-const pepe=()=>{
-    datos.map((dato)=>{
-        if(dato.codigo==)
-    })
-}
+const buscarIndice=(codigo)=>{
+
+    const index = datos.findIndex(row =>row.codigo===codigo)
+    datos.splice(index,1)
+    console.log(datos)
+    
+    props.actualizar(datos)
+    }
 
 
     return(
@@ -46,7 +50,7 @@ const pepe=()=>{
                     <TableCell align="right">${dato.ingresosGravados}</TableCell>
                     <TableCell align="right">{dato.tarifa}</TableCell>
                     <TableCell align="right">${dato.impuesto}</TableCell>
-                    <TableCell align='right'><Button onClick={()=>{pepe}} >pepe</Button></TableCell>
+                    <TableCell align='right'><Button onClick={()=>{buscarIndice(dato.codigo)}} >BORRAR</Button></TableCell>
                     </TableRow>
                 ))}
                 </TableBody>

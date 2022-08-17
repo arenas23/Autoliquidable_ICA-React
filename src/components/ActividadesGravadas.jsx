@@ -12,15 +12,31 @@ import NavigationIcon from '@mui/icons-material/Navigation';
 import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab';
 import TablaActividades from "./TablaActividades";
+import MenuItem from "@mui/material/MenuItem";
+import axios from "axios";
 
 const ActividadesGravadas = ()=>{
 
+
+    const[Actividades,setActividades]=useState([])
+    const [seleccionada,setSeleccionada] = useState({'Descripcion':'','Codigo':'','TarifaxMil':''})
     const [rows,setRows] = useState([])
-    const [codigo,setCodigo]=useState('')
-    const [gravado,setGravado] = useState('')
-    const [tarifa,setTarifa] = useState('')
-    const [impuesto,setImpuesto] = useState('')
+    const[gravado,setGravado]=useState([])
+   
+
+    const [pagina,setPagina]= useState(0)
     var dato=[]
+
+    useEffect(() => {
+        axios
+          .get(
+            `http://201.184.190.109:1377/apiautoliquidable/api/Autoliquidables/GetActividadesbyMunicipio?codigoMunicipio=800096765`
+          )
+          .then((res) => {
+            setActividades(res.data);
+          });
+      }, []);
+
 
     function createData(actividad, codigo, ingresosGravados,tarifa, impuesto) {
         return {actividad, codigo, ingresosGravados,tarifa, impuesto};
@@ -30,14 +46,39 @@ const ActividadesGravadas = ()=>{
         rows.map((row)=>{
             dato.push(row)
         })
-         dato.push(createData("gerat",codigo,gravado,tarifa,impuesto))
+         dato.push(createData(seleccionada.Descripcion,seleccionada.Codigo,gravado[0],seleccionada.TarifaxMil,gravado[1]))
         setRows(dato)
-
       }
     
       const actualizar = (t)=>{
-
         setRows(t)
+      }
+
+      const seleccionarActividad = (e)=>{
+        let actividad={}
+         Actividades.map((Actividad)=>{
+            if(Actividad.Codigo==e)
+            {
+                actividad={
+                    'Descripcion': Actividad.Descripcion,
+                    'Codigo': Actividad.Codigo,
+                    'TarifaxMil': Actividad.TarifaxMil
+                }
+            }
+            setSeleccionada(actividad)
+            setGravado([0,0])
+         })
+      }
+
+      const calcularImpuesto=(e)=>{
+        if(e!="" && e!= NaN){
+            let valor = parseInt(e)
+            setGravado([valor,valor * parseInt(seleccionada.TarifaxMil)/1000])
+        }else{
+            setGravado([0,0])
+        }
+
+
       }
 
     const paso =3
@@ -52,15 +93,22 @@ const ActividadesGravadas = ()=>{
             </Grid>
             <Grid item xs={8}>
                 <FormControl fullWidth>
-                    <InputLabel>Actividad </InputLabel>
+                    <InputLabel>Actividades</InputLabel>
                     <Select
-                        label="Actividad">
+                        label="Actividades"
+                        onChange={() => {seleccionarActividad(event.target.dataset.value)}}
+                        >
+                        {Actividades.map((actividad) => {
+                            return (
+                            <MenuItem value={actividad.Codigo} key={actividad.Id}>
+                                {actividad.Descripcion}
+                                </MenuItem>)})}
                     </Select>
                 </FormControl>
             </Grid>
             <Grid item xs={4}>
                 <FormControl fullWidth>
-                    <TextField id="Codigo" label="Codigo" variant="standard" onChange={()=>{setCodigo(event.target.value)}}/>
+                    <TextField id="Codigo" label="Codigo" variant="standard" value={seleccionada.Codigo}/>
                 </FormControl>
             </Grid>
             <Grid item xs={2}>
@@ -68,7 +116,8 @@ const ActividadesGravadas = ()=>{
                 <InputLabel>Ingresos Gravados</InputLabel>
                 <OutlinedInput
                     id="IngresosGravados"
-                    onChange={()=>{setGravado(event.target.value)}}
+                    defaultValue={0}
+                    onChange={()=>{calcularImpuesto(event.target.value)}}
                     startAdornment={<InputAdornment position="start">$</InputAdornment>}
                     label="Ingresos Gravados"/>
                 </FormControl>
@@ -78,7 +127,8 @@ const ActividadesGravadas = ()=>{
                 <InputLabel>Tarifa X Mil</InputLabel>
                 <OutlinedInput
                     id="IngresosGravados"
-                    onChange={()=>{setTarifa(event.target.value)}}
+                    value={seleccionada.TarifaxMil}
+                    //onChange={()=>{setTarifa(event.target.value)}}
                     endAdornment={<InputAdornment position='end'>X 1000</InputAdornment>}
                     label="Tarifa X Mil"/>
                 </FormControl>
@@ -88,7 +138,8 @@ const ActividadesGravadas = ()=>{
                 <InputLabel>Impuesto</InputLabel>
                 <OutlinedInput
                     id="IngresosGravados"
-                    onChange={()=>{setImpuesto(event.target.value)}}
+                    value={gravado[1]}
+                    //onChange={()=>{setImpuesto(event.target.value)}}
                     startAdornment={<InputAdornment position='start'>$</InputAdornment>}
                     label="Impuesto"
                     />
@@ -101,7 +152,12 @@ const ActividadesGravadas = ()=>{
                 </Fab>
             </Grid>
             <Grid item xs={12}>
-                <TablaActividades filas={rows} actualizar={(t)=>(actualizar(t))}/>
+                <TablaActividades 
+                    filas={rows} 
+                    actualizar={(t)=>(actualizar(t))}
+                    pagina={pagina}
+                    setPagina={(p)=>{setPagina(p)}}
+                />
             </Grid>
         </Grid>
        

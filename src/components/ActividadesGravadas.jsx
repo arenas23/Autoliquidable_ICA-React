@@ -3,7 +3,7 @@ import InfoHacienda from "./InfoHacienda";
 import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
+import Autocomplete from "@mui/material/Autocomplete";
 import BarraEspacio from "./Stepper";
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -19,9 +19,17 @@ const ActividadesGravadas = ()=>{
 
 
     const[Actividades,setActividades]=useState([])
-    const [seleccionada,setSeleccionada] = useState({'Descripcion':'','Codigo':'','TarifaxMil':''})
+    const [seleccionada,setSeleccionada] = useState({'Descripcion':'','Codigo':'','TarifaxMil':0})
     const [rows,setRows] = useState([])
     const[gravado,setGravado]=useState([])
+
+    const options = Actividades.map((option) => {
+        const firstNumber = parseInt(option.Codigo / 100) * 100;
+        return {
+          firstNumber: firstNumber,
+          ...option
+        };
+      });
    
 
     const [pagina,setPagina]= useState(0)
@@ -55,9 +63,10 @@ const ActividadesGravadas = ()=>{
       }
 
       const seleccionarActividad = (e)=>{
+        let codigo = e.split('-')
         let actividad={}
          Actividades.map((Actividad)=>{
-            if(Actividad.Codigo==e)
+            if(Actividad.Codigo==codigo[0].trim())
             {
                 actividad={
                     'Descripcion': Actividad.Descripcion,
@@ -77,8 +86,6 @@ const ActividadesGravadas = ()=>{
         }else{
             setGravado([0,0])
         }
-
-
       }
 
     const paso =3
@@ -93,7 +100,18 @@ const ActividadesGravadas = ()=>{
             </Grid>
             <Grid item xs={8}>
                 <FormControl fullWidth>
-                    <InputLabel>Actividades</InputLabel>
+                    <Autocomplete
+                        id="grouped-demo"
+                        options={options.sort((a, b) => a.firstNumber - b.firstNumber)}
+                        groupBy={(option) => option.firstNumber}
+                        onChange={() => {seleccionarActividad(event.target.textContent)}}
+                        getOptionLabel={(option) =>
+                            option.Codigo + " - " + option.Descripcion
+                        }
+            
+                        renderInput={(params) => <TextField {...params} label="Actividades" />}
+                    />
+                    {/* <InputLabel>Actividades</InputLabel>
                     <Select
                         label="Actividades"
                         onChange={() => {seleccionarActividad(event.target.dataset.value)}}
@@ -103,7 +121,7 @@ const ActividadesGravadas = ()=>{
                             <MenuItem value={actividad.Codigo} key={actividad.Id}>
                                 {actividad.Descripcion}
                                 </MenuItem>)})}
-                    </Select>
+                    </Select> */}
                 </FormControl>
             </Grid>
             <Grid item xs={4}>
@@ -117,16 +135,17 @@ const ActividadesGravadas = ()=>{
                 <OutlinedInput
                     id="IngresosGravados"
                     defaultValue={0}
+                    value={gravado[0]}
                     onChange={()=>{calcularImpuesto(event.target.value)}}
                     startAdornment={<InputAdornment position="start">$</InputAdornment>}
                     label="Ingresos Gravados"/>
                 </FormControl>
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={1}>
                 <FormControl fullWidth>
                 <InputLabel>Tarifa X Mil</InputLabel>
                 <OutlinedInput
-                    id="IngresosGravados"
+                    id="TarifaMil"
                     value={seleccionada.TarifaxMil}
                     //onChange={()=>{setTarifa(event.target.value)}}
                     endAdornment={<InputAdornment position='end'>X 1000</InputAdornment>}
